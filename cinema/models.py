@@ -19,3 +19,19 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Like(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='liked')
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='likes')
+
+    class Meta:
+        unique_together = ['owner', 'movie']
+
+
+class Favorites(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites')
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='favorites')
+
+    class Meta:
+        unique_together = ['owner', 'movie']

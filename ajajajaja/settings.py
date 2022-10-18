@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'category',
     'cinema',
     'rating',
-    'ticket',
+    'buy',
+    'comment',
 ]
 
 MIDDLEWARE = [

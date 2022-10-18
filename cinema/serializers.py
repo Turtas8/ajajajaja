@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.db.models import Avg
 from category.models import Category
-from .models import Movie
+from .models import Movie, Like, Favorites
 
 
 class ProductListSerializer(serializers.ModelSerializer):
@@ -29,4 +29,23 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         repr = super().to_representation(instance)
         repr['rating'] = instance.reviews.aggregate(Avg('rating'))['rating__avg']
         repr['rating_count'] = instance.reviews.count()
+        return repr
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model = Like
+        fields = ('owner', 'movie')
+
+
+class FavoritesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorites
+        fields = ('movie',)
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['movies'] = ProductListSerializer(instance.post).data
         return repr

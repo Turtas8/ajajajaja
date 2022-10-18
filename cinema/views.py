@@ -5,6 +5,9 @@ from . import serializers
 from .models import Movie
 from .permissions import IsAuthor
 from rating.serializers import ReviewSerializer
+from comment.serializers import CommentSerializer
+from rest_framework.response import Response
+from .models import Like, Favorites
 
 
 class MovieViewSet(ModelViewSet):
@@ -38,3 +41,46 @@ class MovieViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save(owner=request.user, product=product)
         return response.Response(serializer.data, status=201)
+
+    @action(['GET'], detail=True)
+    def comments(self, request, pk):
+        post = self.get_object()
+        comments = post.comments.all()
+        serializer = serializers.CommentSerializer(comments, many=True)
+        return Response(serializer.data, status=200)
+
+    @action(['POST'], detail=True)
+    def add_to_liked(self, request, pk):
+        post = self.get_object()
+        user = request.user
+        if user.liked.filter(post=post).exists():
+            return Response('This Post is Already Liked!', status=400)
+        Like.objects.create(owner=user, post=post)
+        return Response('You Liked The Post', status=201)
+
+    # /posts/<id>?remove_from_liked/
+    @action(['DELETE'], detail=True)
+    def remove_from_liked(self, request, pk):
+        post = self.get_object()
+        user = request.user
+        if not user.liked.filter(post=post).exists():
+            return Response('You Didn\'t Like This Post!', status=400)
+        user.liked.filter(post=post).delete()
+        return Response('Your Like is Deleted!', status=204)
+
+    @action(['GET'], detail=True)
+    def get_likes(self, request, pk):
+        post = self.get_object()
+        likes = post.likes.all()
+        serializer = serializers.LikeSerializer(likes, many=True)
+        return Response(serializer.data)
+
+    @action(['POST'], detail=True)
+    def favorite_action(self, request, pk):
+        post = self.get_object()
+        user = request.user
+        if user.favorites.filter(post=post).exists():
+            user.favorites.filter(post=post).delete()
+            return Response('Deleted From Favorites!', status=204)
+        Favorites.objects.create(owner=user, post=post)
+        return Response('Added to Favorites!', status=201)
