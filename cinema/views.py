@@ -1,17 +1,25 @@
 from rest_framework import permissions, response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from . import serializers
 from .models import Movie
 from .permissions import IsAuthor
 from rating.serializers import ReviewSerializer
-from comment.serializers import CommentSerializer
+# from comment.serializers import CommentSerializer
 from rest_framework.response import Response
 from .models import Like, Favorites
 
 
+class StandartResultPagination(PageNumberPagination):
+    page_size = 3
+    page_query_param = 'page'
+    max_page_size = 1000
+
+
 class MovieViewSet(ModelViewSet):
     queryset = Movie.objects.all()
+    pagination_class = StandartResultPagination
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -26,7 +34,7 @@ class MovieViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-    # api/v1/products/<id>/reviews/
+    # api/v1/movies/<id>/reviews/
     @action(['GET', 'POST'], detail=True)
     def reviews(self, request, pk):
         product = self.get_object()
