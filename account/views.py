@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
-from rest_framework import permissions
+from rest_framework import permissions, generics
+from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
@@ -36,6 +37,14 @@ class ActivationView(APIView):
             return Response({'msg': 'Successfully activated!'}, status=200)
         except User.DoesNotExist:
             return Response({'msg': 'Link expired!'}, status=400)
+
+
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = serializers.UserListSerializer
+    filter_backends = (SearchFilter,)
+    search_fields = ('username', 'email')
 
 
 class LoginView(TokenObtainPairView):

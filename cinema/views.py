@@ -9,6 +9,8 @@ from rating.serializers import ReviewSerializer
 # from comment.serializers import CommentSerializer
 from rest_framework.response import Response
 from .models import Like, Favorites
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class StandartResultPagination(PageNumberPagination):
@@ -20,6 +22,9 @@ class StandartResultPagination(PageNumberPagination):
 class MovieViewSet(ModelViewSet):
     queryset = Movie.objects.all()
     pagination_class = StandartResultPagination
+    filter_backends = (SearchFilter, DjangoFilterBackend)
+    search_fields = ('title',)
+    filterset_fields = ('owner', 'category')
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -29,7 +34,10 @@ class MovieViewSet(ModelViewSet):
     def get_permissions(self):
         if self.action in ('update', 'partial_update', 'destroy'):
             return [permissions.IsAuthenticated(), IsAuthor()]
-        return [permissions.IsAuthenticatedOrReadOnly()]
+        elif self.action in ('create', 'add_to_liked', 'remove_from_liked', 'favorite_action'):
+            return [permissions.IsAuthenticated()]
+        else:
+            return [permissions.IsAuthenticatedOrReadOnly()]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
