@@ -12,6 +12,8 @@ from .models import Like, Favorites
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
+from .service import MovieFilter
+
 
 class StandartResultPagination(PageNumberPagination):
     page_size = 3
@@ -24,7 +26,7 @@ class MovieViewSet(ModelViewSet):
     pagination_class = StandartResultPagination
     filter_backends = (SearchFilter, DjangoFilterBackend)
     search_fields = ('title',)
-    filterset_fields = ('owner', 'category')
+    filterset_class = MovieFilter
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -67,36 +69,36 @@ class MovieViewSet(ModelViewSet):
 
     @action(['POST'], detail=True)
     def add_to_liked(self, request, pk):
-        post = self.get_object()
+        movie = self.get_object()
         user = request.user
-        if user.liked.filter(post=post).exists():
-            return Response('This Post is Already Liked!', status=400)
-        Like.objects.create(owner=user, post=post)
-        return Response('You Liked The Post', status=201)
+        if user.liked.filter(movie=movie).exists():
+            return Response('This Movie is Already Liked!', status=400)
+        Like.objects.create(owner=user, movie=movie)
+        return Response('You Liked The Movie', status=201)
 
     # /posts/<id>?remove_from_liked/
     @action(['DELETE'], detail=True)
     def remove_from_liked(self, request, pk):
-        post = self.get_object()
+        movie = self.get_object()
         user = request.user
-        if not user.liked.filter(post=post).exists():
-            return Response('You Didn\'t Like This Post!', status=400)
-        user.liked.filter(post=post).delete()
+        if not user.liked.filter(movie=movie).exists():
+            return Response('You Didn\'t Like This Movie!', status=400)
+        user.liked.filter(movie=movie).delete()
         return Response('Your Like is Deleted!', status=204)
 
     @action(['GET'], detail=True)
     def get_likes(self, request, pk):
-        post = self.get_object()
-        likes = post.likes.all()
+        movie = self.get_object()
+        likes = movie.likes.all()
         serializer = serializers.LikeSerializer(likes, many=True)
         return Response(serializer.data)
 
     @action(['POST'], detail=True)
     def favorite_action(self, request, pk):
-        post = self.get_object()
+        movie = self.get_object()
         user = request.user
-        if user.favorites.filter(post=post).exists():
-            user.favorites.filter(post=post).delete()
+        if user.favorites.filter(movie=movie).exists():
+            user.favorites.filter(movie=movie).delete()
             return Response('Deleted From Favorites!', status=204)
-        Favorites.objects.create(owner=user, post=post)
+        Favorites.objects.create(owner=user, movie=movie)
         return Response('Added to Favorites!', status=201)
