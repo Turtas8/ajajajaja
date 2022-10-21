@@ -81,8 +81,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # 'social_django.context_processors.backends',
-                # 'social_django.context_processors.login_redirect',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -164,8 +164,8 @@ EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        # 'rest_framework_social_oauth2.authentication.SocialAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
@@ -198,13 +198,13 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-# AUTHENTICATION_BACKENDS = [
-#     'social_core.backends.vk.VKOAuth2',
-#     'rest_framework_social_oauth2.backends.DjangoOAuth2',
-#     'django.contrib.auth.backends.ModelBackend',
-# ]
-#
-# SOCIAL_AUTH_VK_OAUTH2_KEY = '51454812'
-# SOCIAL_AUTH_VK_OAUTH2_SECRET = 'R2lcymk5nS4cstIWbpyI'
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.vk.VKOAuth2',
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+SOCIAL_AUTH_VK_OAUTH2_KEY = '51454812'
+SOCIAL_AUTH_VK_OAUTH2_SECRET = 'R2lcymk5nS4cstIWbpyI'
 
 
