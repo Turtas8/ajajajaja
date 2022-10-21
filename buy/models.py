@@ -7,9 +7,8 @@ User = get_user_model()
 
 
 STATUS_CHOICES = (
-    ('open', 'Открыт'),
-    ('in_process', 'В обработке'),
-    ('closed', 'Закрыт')
+    ('buy', 'Куплено'),
+    ('watch', 'Смотреть')
 )
 
 
