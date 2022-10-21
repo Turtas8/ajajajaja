@@ -102,3 +102,28 @@ class MovieViewSet(ModelViewSet):
             return Response('Deleted From Favorites!', status=204)
         Favorites.objects.create(owner=user, movie=movie)
         return Response('Added to Favorites!', status=201)
+
+    @action(['DELETE'], detail=True)
+    def remove_from_favorites(self, request, pk):
+        movie = self.get_object()
+        user = request.user
+        if not user.favorites.filter(movie=movie).exists():
+            return Response('This Movie is not in Favorites!', status=400)
+        user.favorites.filter(movie=movie).delete()
+        return Response('Your Favorite is Deleted!', status=204)
+
+    @action(['GET'], detail=True)
+    def get_favorites(self, request, pk):
+        movie = self.get_object()
+        favorites = movie.favorites.all()
+        serializer = serializers.FavoritesSerializer(favorites, many=True)
+        return Response(serializer.data)
+
+    @action(['DELETE'], detail=True)
+    def remove_from_reviews(self, request, pk):
+        movie = self.get_object()
+        user = request.user
+        if not user.review.filter(movie=movie).exists():
+            return Response('You are not Review This Movie!', status=400)
+        user.review.filter(movie=movie).delete()
+        return Response('Your Review is Deleted!', status=204)

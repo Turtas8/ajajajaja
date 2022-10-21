@@ -43,8 +43,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'rest_framework_social_oauth2',
     'django_filters',
     'drf_yasg',
+    'oauth2_provider',
+    'social_django',
     # my_apps
     'account',
     'category',
@@ -52,6 +55,7 @@ INSTALLED_APPS = [
     'rating',
     'buy',
     'comment',
+    'public_chat',
 ]
 
 MIDDLEWARE = [
@@ -77,6 +81,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'social_django.context_processors.backends',
+                # 'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -157,7 +163,9 @@ EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication'
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        # 'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
@@ -189,3 +197,14 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=60),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+# AUTHENTICATION_BACKENDS = [
+#     'social_core.backends.vk.VKOAuth2',
+#     'rest_framework_social_oauth2.backends.DjangoOAuth2',
+#     'django.contrib.auth.backends.ModelBackend',
+# ]
+#
+# SOCIAL_AUTH_VK_OAUTH2_KEY = '51454812'
+# SOCIAL_AUTH_VK_OAUTH2_SECRET = 'R2lcymk5nS4cstIWbpyI'
+
+

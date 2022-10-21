@@ -51,7 +51,9 @@ urlpatterns = [
     path('api/v1/', include(router.urls)),
     path('api/v1/accounts/', include('account.urls')),
     path('api/v1/buys/', include('buy.urls')),
-    path('api/v1/comments/', include('comment.urls'))
+    path('api/v1/comments/', include('comment.urls')),
+    # path('auth/', include('social_django.urls')),
+    # path('chats/', include('public_chat.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

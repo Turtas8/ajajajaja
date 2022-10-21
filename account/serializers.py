@@ -31,8 +31,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
+        owner = User.objects.create_user(**validated_data)
+        return owner
 
 
 class LogoutSerializer(serializers.Serializer):
