@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from rest_framework import permissions, response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
@@ -127,3 +128,7 @@ class MovieViewSet(ModelViewSet):
             return Response('You are not Review This Movie!', status=400)
         user.review.filter(movie=movie).delete()
         return Response('Your Review is Deleted!', status=204)
+
+
+def auth(request):
+    return render(request, 'oauth.html')

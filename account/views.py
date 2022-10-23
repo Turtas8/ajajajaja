@@ -59,3 +59,4 @@ class LogoutView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response('Successfully logged out!', status=204)
+

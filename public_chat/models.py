@@ -10,7 +10,7 @@ class PublicChatRoom(models.Model):
         return self.title
 
     def connect_user(self, user):
-        #return True if user added  to the list
+        # return True if user added  to the list
         is_user_added = False
         if not user in self.users.all():
             self.save()
@@ -28,7 +28,7 @@ class PublicChatRoom(models.Model):
 
     @property
     def group_name(self):
-        #канал для групп
+        # канал для групп
         return f'PublicChatRoom-{self.id}'
 
 

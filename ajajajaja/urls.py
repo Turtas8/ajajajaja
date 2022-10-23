@@ -21,6 +21,8 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
+
+from cinema.views import auth
 from category.views import CategoryViewSet
 from cinema.views import MovieViewSet
 
@@ -52,7 +54,9 @@ urlpatterns = [
     path('api/v1/accounts/', include('account.urls')),
     path('api/v1/buys/', include('buy.urls')),
     path('api/v1/comments/', include('comment.urls')),
-    path('auth/', include('social_django.urls')),
+    # path('auth/', include('social_django.urls')),
+    path('', include('social_django.urls', namespace='social')),
+    path('auth/', auth),
     # path('auth/', include('rest_framework_social_oauth2.urls')),
     # path('chats/', include('public_chat.urls')),
 ]
